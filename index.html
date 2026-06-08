@@ -14,8 +14,18 @@
 
   <h1>Welcome to Darren and Doug's Kea and Stork Workshop</h1>
 
-  <p>Kea is an open-source DHCPv4 and DHCP6 software system from ISC (Internet Systems Consortium). Stork is a web-based management system that makes it easier to monitor and configure a network of Kea servers. </p>
+  <p>Kea is an open-source DHCPv4 and DHCP6 software system from ISC (Internet Systems Consortium). Stork is a web-based management system that makes it easier to monitor and configure a network of Kea servers. Both Kea and Stork are applications run under *NIX operating systems. ISC publishes both the source code, and pre-compiled packages for popular operating systems.</p>
 
+  <p>This workshop is for people who want to run DHCP servers for their network who want to get some quick exposure to the Kea DHCP system. Participants should be familiar with the Linux CLI, novice level is ok, and should have access to an ssh client. </p>
+
+<p>Users will be given VMs and walked through the installation of two Kea DHCP servers and a client simulator, which will generate traffic.
+<li>After installation, we will configure the Kea servers, establishing one as the primary and the other as a backup system, and adding a subnet, a pool and some logging.</li>
+<li>After starting everything up, we will run a few tests to determine that everything is operational, including generating some client traffic to see addresses assigned.</li>
+<li>We will then install the Stork graphical management system and the Stork agent, authorize our Kea servers for monitoring and allow everyone time to explore the interface.</li>
+<li>Depending on the group's progress, we will trigger a failover event, to test the high availability set-up.</li>
+<li>After testing the high availability setup, we will then demonstrate and allow users time to follow along with editing the configuration.</li></p>
+</p>
+  
 </body>
 
 </html>
