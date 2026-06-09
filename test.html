@@ -32,7 +32,7 @@
 copy this configuration:</li>
 </ol>
 
-<div class=copyCode id=button34><div class=copyFont id=button34><a href=# onclick="copy2clipboard(34);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=34>
+<div class=copyCode id=button34><div class=copyFont id=copybutton34><a href="javascript:void(0)" onclick="copy2clipboard(34);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=34>
 {
   "Dhcp4": {
     "control-socket": {
@@ -54,9 +54,6 @@ copy this configuration:</li>
       },
       {
         "library": "libdhcp_stat_cmds.so"
-      },
-      {
-        "library": "libdhcp_host_cmds.so"
       },
       {
         "library": "libdhcp_subnet_cmds.so"
@@ -94,7 +91,7 @@ copy this configuration:</li>
         },
         "pools": [
           {
-            "pool": "192.168.2.2 - 192.168.2.254"
+            "pool": "192.168.2.100 - 192.168.2.254"
           }
         ],
         "option-data": [
@@ -152,7 +149,7 @@ on kea2:
 Copy this confifuation:</li>
 </ol>
 
-<div class=copyCode id=button154><div class=copyFont id=button34><a href=# onclick="copy2clipboard(154);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=154>
+<div class=copyCode id=button151><div class=copyFont id=copybutton151><a href="javascript:void(0)" onclick="copy2clipboard(151);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=151>
 {
   "Dhcp6": {
     "control-socket": {
@@ -176,9 +173,6 @@ Copy this confifuation:</li>
         "library": "libdhcp_stat_cmds.so"
       },
       {
-        "library": "libdhcp_host_cmds.so"
-      },
-      {
         "library": "libdhcp_subnet_cmds.so"
       },
       {
@@ -191,12 +185,12 @@ Copy this confifuation:</li>
               "peers": [
                 {
                   "name": "server1",
-                  "url": "http://[fd00::12]:8000/",
+                  "url": "http://[2001:db8::2]:8000/",
                   "role": "primary"
                 },
                 {
                   "name": "server2",
-                  "url": "http://[fd00::13]:8000/",
+                  "url": "http://[2001:db8::3]:8000/",
                   "role": "standby"
                 }
               ]
@@ -208,16 +202,16 @@ Copy this confifuation:</li>
     "subnet6": [
       {
         "id": 1,
-        "subnet": "fd00:0:0:3e8::/64",
+        "subnet": "2001:db8:0:1::/64",
         "interface": "eth1",
         "pools": [
           {
-            "pool": "fd00:0:0:3e8::0 - fd00:0:0:3e8::ffff"
+            "pool": "2001:db8:0:1::1:0 - 2001:db8:0:1::1:ffff"
           }
         ],
         "pd-pools": [
           {
-            "prefix": "fd00:0:100::",
+            "prefix": "2001:db8:100::",
             "prefix-len": 40,
             "delegated-len": 56
           }
@@ -296,6 +290,65 @@ on kea2:
 <li>Should see "Green checkmark" in "Status" for "kea1" and "kea2".</li>
 </ul></li>
 <li>Eddy describes cool and useful things about the Stork UI.</li>
+<li>Darren demonstrates exercise 4
+<ul>
+<li>Send DHCPv4 traffic: <code class=code2>perfdhcp -l eth1 -4 -r 10 -R 100 -p 11</code> This will be somewhere around 100 packets.</li>
+<li>Click refresh button next to DHCP Dashboard title.  Should see the IPv4 subnet filled 40% with green.  A hover should show something like 100 assigned addresses.</li>
+<li>Click "DHCP &gt; Leases Search" menu.</li>
+<li>Enter: <code class=code2>00:0c:01:02:03:04</code> in the "Search leases" box and press "Enter" on the keyboard.</li>
+<li>Two leases should be returned (one from each Kea server).</li>
+<li>Send DHCPv6 traffic: <code class=code2>perfdhcp -l eth1 -6 -r 10 -R 100 -p 11 -e address-and-prefix</code></li>
+<li>Click "DHCP &gt; Dashboard" you may have to click the refresh button next to DHCP Dashboard title a couple times.  Eventually a hover should show around 100 clients for "Assigned NAs" and the "Assigned PDs".</li>
+<li>Click "DHCP &gt; Leases Search" menu.</li>
+<li>Type: <code class=code2>00:01:00:01:31:a2:0e:26:00:0c:01:02:03:04</code> in the "Search leases" box.</li>
+<li>You should see 4 leases (2 from each kea server) of two each IA<em>NA and IA</em>PD.</li>
+<li>Eddy talks about that.</li>
+<li>Perhaps Eddy talks about interesting things about the lease search here (such as upcoming wildcard search).</li>
+</ul></li>
+<li>Participants now do exercise 4.</li>
+<li>Now Darren does exercise 5
+<ul>
+<li>Connect to the client machine a second time as you will need two windows in which to run <code class=code2>perfdhcp</code> simultaneously (once for dhcp4 and once for dhcp6).</li>
+<li>in the dhcp4 client window type: <code class=code2>perfdhcp -l eth1 -4 -r 10 -R 100 -Y 1 -y 3600 -t 15</code></li>
+<li>In the dhcp6 client window type: <code class=code2>perfdhcp -l eth1 -6 -r 10 -R 100 -e address-and-prefix -Y 1 -y 3600 -t 15</code></li>
+<li>Now shut down <code class=code2>kea-dhcp4</code> on kea1: <code class=code2>systemctl stop isc-kea-dhcp4-server</code></li>
+<li>Should start to see drops in your dhcp4 client window</li>
+<li>On kea2 execute the following: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket4 - | jq</code> a few times.  Eventually you should see <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.</li>
+<li>Look at "DHCP &gt; Dashboard" in the Stork interface and there should be a warning triangle and "partner-down" in the "HA State" for kea2.  kea1 should have a red X in status and "unavailable" in the HA State.</li>
+<li>Drops should stop incrementing in your dhcp4 client window.</li>
+<li>Now, repeat this for <code class=code2>kea-dhcp6</code>. Shut down <code class=code2>kea-dhcp6</code>: <code class=code2>systemctl stop isc-kea-dhcp6-server</code> on kea1.</li>
+<li>Should start to see drops in your dhcp6 client window</li>
+<li>on kea2 execute the following: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket6 - | jq</code> a few times. You should again see the same result of <code class=code2>partner-down</code> as described earlier.</li>
+<li>Over in the Stork interface, click the refresh button next to "DHCP Dashboard".  You should see similar states for the "DHCPv6" services as previously seen in "DHCPv4".</li>
+<li>You will notice in the "Events" log on the Stork interface that times for the beginnings of the trouble are shown.</li>
+<li>Drops should stop incrementing in your dhcp6 client window.</li>
+<li>Now start both services back up on kea1: <code class=code2>systemctl start isc-kea-dhcp4-server</code> and <code class=code2>systemctl start isc-kea-dhcp6-server</code></li>
+<li>You can watch the state changes with the API commands shown earlier and also the "Events" log in Stork, and finally, by clicking the refresh button next to "DHCP Dashboard" in the Stork interface (note that this part of Stork does not auto-refresh).</li>
+<li>Stop <code class=code2>perfdhcp</code> in the dhcp4 and dhcp6 client windows.</li>
+<li>Eddy perhaps talks a bit here about HA failover events and Stork in general.</li>
+</ul></li>
+<li>Now the participants do exercise 5.</li>
+<li>Now Darren does exercise 6 (add a subnet).
+<ul>
+<li>Click on "DHCP &gt; Subnets"</li>
+<li>Click "+ New Subnet"</li>
+<li>Enter <code class=code2>2001:db8:0:2::/64</code> in the "Subnet" box and click "Proceed".</li>
+<li>Choose both DHCPv6 servers in "Assignments &gt; DHCP Servers"</li>
+<li>Click "+ Add Pool"</li>
+<li>Type <code class=code2>2001:db8:0:2::1:0</code> in "First Address and <code class=code2>2001:db8:0:2::1:ffff</code> in "Last Address"</li>
+<li>Now Pick both DHCPv6 servers in "Assignments &gt; DHCP Servers" just below the pool info you just added.</li>
+<li>Now click "Submit" way at the bottom of the page.</li>
+<li>I just realized I forgot to add the prefix delegation.  Lets do that now</li>
+<li>Click "Edit".</li>
+<li>Click "+ Add Pool" under "Prefix Delegation Pools"</li>
+<li>Enter "2001:db8:200::/40" in "Pool Prefix"</li>
+<li>Enter "56" in "Delegated Length"</li>
+<li>Choose both "DHCPv6" servers in "Assignments &gt; DHCP Servers"</li>
+<li>Click "Submit" way at the bottom of the page.</li>
+<li>Eddy talks about the interface and what we are seeing here.</li>
+</ul></li>
+<li>Now participants do exercise 6</li>
+<li>and we are done!</li>
 </ol>
 
 <h2>Question(s)</h2>
@@ -316,5 +369,6 @@ on kea2:
 <li>We need to preinstall postgres and configure: <code class=code2>sudo apt install postgresql</code> and <code class=code2>sudo systemctl enable --now postgresql</code></li>
 <li>We need to setup "kea1" and "kea2" <code class=code2>/etc/hosts</code> to point the hostname at the private <code class=code2>eth1</code> IP.</li>
 <li>We need to setup "kea1" and "kea2" in <code class=code2>/etc/hosts</code> on "stork" also because no dns server :)</li>
+<li>We have decided not to show editing host reservations with Stork because we would need to have database support in Kea which would complicate things.  We could add a reservaiton in the configuration itself if someone thinks that is a good idea, but Stork will only show it, not manage it.</li>
 </ul>
 </body></html>
