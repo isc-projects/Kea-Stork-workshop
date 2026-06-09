@@ -1,0 +1,71 @@
+html, body {
+  font-family: sans-serif, Sans-Serif;
+  line-height: 1.8;
+}
+
+/* code block styling */
+div.copyCode {
+  width: 100%;
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  line-height: 1.0;
+}
+div.copyFont {
+  width: 100%;
+  text-align: right;
+  line-height: 1.0;
+}
+pre {
+  background-color: #f3f3f3;
+/*  border-radius: 4px; */
+  padding: 4px;
+  overflow-x: auto;
+  line-height: 1.2;
+}
+code {
+  font-family: Monospace;
+  font-size: 14px;
+  color: green;
+  background-color: #f3f3f3;
+}
+code.code2 {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+
+/* table element styling */
+table, th, td {
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #f3f3f3;
+}
+
+th, td {
+  padding: 10px;
+}
+
+a:link, a:visited {
+  /* link styling */
+  background-color: #dedede;
+  color: black;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  /* link styling for currently hover or clicking links */
+  background-color: #73AD21;
+  color: white;
+}
+
+a.ANOSTYLE {
+  /* Links with no style for image links */
+  background-color: initial;
+}
