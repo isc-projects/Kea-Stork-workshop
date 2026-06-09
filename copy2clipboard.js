@@ -1,5 +1,5 @@
 function copy2clipboard(id) {
-  buttonid = 'button'+id
+  buttonid = 'copybutton'+id
   // submitted id MUST be a form field
   // buttonid must be the id of the button to be disabled and replaced with "copied!"
   // Find the element that contains the text to be copied
