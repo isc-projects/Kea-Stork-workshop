@@ -1,19 +1,7 @@
-<!doctype html>
-
-<html lang="en">
-
-<head>
-
-  <meta charset="utf-8">
-
-  <title>Darren and Doug's Kea and Stork Workshop</title>
-
-</head>
+<!DOCTYPE HTML><html><head><link rel="stylesheet" href="presentation.css"><script src="copy2clipboard.js"></script></head><body>
+<h1>PoC for NANOG Kea + Stork workshop</h1>
 
 <body>
-
-  <h1>Welcome to Darren and Doug's Kea and Stork Workshop</h1>
-
   <p>Kea is an open-source DHCPv4 and DHCP6 software system from ISC (Internet Systems Consortium). Stork is a web-based management system that makes it easier to monitor and configure a network of Kea servers. Both Kea and Stork are applications run under *NIX operating systems. ISC publishes both the source code, and pre-compiled packages for popular operating systems.</p>
 
   <p>This workshop is for people who want to run DHCP servers for their network who want to get some quick exposure to the Kea DHCP system. Participants should be familiar with the Linux CLI, novice level is ok, and should have access to an ssh client. </p>
@@ -26,6 +14,373 @@
 <li>After testing the high availability setup, we will then demonstrate and allow users time to follow along with editing the configuration.</li></p>
 </p>
   
-</body>
+<h2>Virtual Machines</h2>
 
-</html>
+<ul>
+<li>Each participant will get 4 VMs
+<ul>
+<li>"client": will be used for various <code class=code2>perfdhcp</code> commands to simulate DHCP traffic.</li>
+<li>"kea1": will be used for <code class=code2>kea-dhcp4</code>, <code class=code2>kea-dhcp6</code>, and <code class=code2>stork-agent</code></li>
+<li>"kea2": will be used for <code class=code2>kea-dhcp4</code>, <code class=code2>kea-dhcp6</code>, and <code class=code2>stork-agent</code></li>
+<li>"stork": will be used for the <code class=code2>stork-server</code> GUI</li>
+</ul></li>
+<li>These will be instantiated using https://www.linode.com/</li>
+</ul>
+
+<h2>What will we do?</h2>
+
+<ol>
+<li>Some brief introduction</li>
+<li>Get everyone logged into their servers.</li>
+<li>Eddy talks for a while</li>
+<li>I demonstrate exercise 1: Install kea on "kea1", "kea2" and perfdhcp on "client"
+<ul>
+<li>Add the repo: <code class=code2>curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-3-0/setup.deb.sh' | sudo -E bash</code> on "kea1", "kea2", and "client".</li>
+<li>Install <code class=code2>isc-kea</code>: <code class=code2>apt install isc-kea</code> on "kea1" and "kea2"</li>
+<li>Install <code class=code2>perfdhcp</code>: <code class=code2>apt install isc-kea-perfdhcp</code> on "client"</li>
+</ul></li>
+<li>The users now do this step.  Perhaps Eddy talks while they do this and Doug walks around the room helping those with problems.</li>
+<li>I demonstrate exercise 2: 
+copy this configuration:</li>
+</ol>
+
+<div class=copyCode id=button34><div class=copyFont id=copybutton34><a href="javascript:void(0)" onclick="copy2clipboard(34);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=34>
+{
+  "Dhcp4": {
+    "control-socket": {
+      "socket-type": "unix",
+      "socket-name": "socket4"
+    },
+    "interfaces-config": {
+      "interfaces": [
+        "eth1"
+      ]
+    },
+    "lease-database": {
+      "type": "memfile",
+      "name": "leases4.csv"
+    },
+    "hooks-libraries": [
+      {
+        "library": "libdhcp_lease_cmds.so"
+      },
+      {
+        "library": "libdhcp_stat_cmds.so"
+      },
+      {
+        "library": "libdhcp_subnet_cmds.so"
+      },
+      {
+        "library": "libdhcp_ha.so",
+        "parameters": {
+          "high-availability": [
+            {
+              "this-server-name": "server1",
+              "mode": "hot-standby",
+              "peers": [
+                {
+                  "name": "server1",
+                  "url": "http://192.168.1.2:8000/",
+                  "role": "primary"
+                },
+                {
+                  "name": "server2",
+                  "url": "http://192.168.1.3:8000/",
+                  "role": "standby"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "subnet4": [
+      {
+        "id": 1,
+        "subnet": "192.168.2.0/24",
+        "relay": {
+          "ip-addresses": [ "192.168.1.5" ]
+        },
+        "pools": [
+          {
+            "pool": "192.168.2.100 - 192.168.2.254"
+          }
+        ],
+        "option-data": [
+          {
+            "name": "routers",
+            "data": "192.168.2.1"
+          }
+        ]
+      }
+    ],
+    "loggers": [
+      {
+        "name": "kea-dhcp4",
+        "output-options": [
+          {
+            "output": "kea-dhcp4.log"
+          }
+        ],
+        "severity": "INFO"
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+<p>on kea1: 
+  <code class=code2>cp /dev/null /etc/kea/kea-dhcp4.conf</code>
+  <code class=code2>nano /etc/kea/kea-dhcp4.conf</code>
+  Now paste the the configuration content above into the file
+  press <code class=code2>ctrl+o</code> to save
+  press <code class=code2>ctrl+x</code> to exit
+  test the configuration: <code class=code2>kea-dhcp4 -T /etc/kea/kea-dhcp4.conf</code> watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.
+on kea2:
+  <code class=code2>cp /dev/null /etc/kea/kea-dhcp4.conf</code>
+  <code class=code2>nano /etc/kea/kea-dhcp4.conf</code>
+  Now paste the the configuration content above into the file
+  Find the line: <code class=code2>"this-server-name": "server1",</code> and change to <code class=code2>"this-server-name": "server2",</code>
+  press <code class=code2>ctrl+o</code> to save
+  press <code class=code2>ctrl+x</code> to exit
+  test the configuration: <code class=code2>kea-dhcp4 -T /etc/kea/kea-dhcp4.conf</code> watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.</p>
+
+<p>Now start <code class=code2>kea-dhcp4</code>:
+  On both "kea1" and "kea2":
+    Start it up: <code class=code2>systemctl enable --now isc-kea-dhcp4-server</code></p>
+
+<p>Check that it is running and HA is working by running this: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket4 - | jq</code> on either "kea1" or "kea2".  Run it a few times.  Eventually, the output should show <code class=code2>"state": "hot-standby"</code> for both the <code class=code2>"local"</code> and <code class=code2>"remote"</code> server in the output of this command.</p>
+
+<p>++ Eddy explains <code class=code2>perfdhcp</code> here :)</p>
+
+<p>Now, from the "client" machine, run <code class=code2>perfdhcp</code> to make sure that everything seems to work: <code class=code2>perfdhcp -l eth1 -4 -r 1 -R 1 -p 2</code> The output should contain <code class=code2>drops: 0</code> and <code class=code2>received packets: 1</code> (or 2).  These should appear under both <code class=code2>***Statistics for: DISCOVER-OFFER***</code> and <code class=code2>***Statistics for: REQUEST-ACK***</code></p>
+
+<ol start="7">
+<li>Participants do step 6</li>
+<li>I demonstrate exercise 3 where we setup <code class=code2>kea-dhcp6</code> in much the same way as <code class=code2>kea-dhcp4</code>.
+Copy this confifuation:</li>
+</ol>
+
+<div class=copyCode id=button151><div class=copyFont id=copybutton151><a href="javascript:void(0)" onclick="copy2clipboard(151);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=151>
+{
+  "Dhcp6": {
+    "control-socket": {
+      "socket-type": "unix",
+      "socket-name": "socket6"
+    },
+    "interfaces-config": {
+      "interfaces": [
+        "eth1"
+      ]
+    },
+    "lease-database": {
+      "type": "memfile",
+      "name": "leases6.csv"
+    },
+    "hooks-libraries": [
+      {
+        "library": "libdhcp_lease_cmds.so"
+      },
+      {
+        "library": "libdhcp_stat_cmds.so"
+      },
+      {
+        "library": "libdhcp_subnet_cmds.so"
+      },
+      {
+        "library": "libdhcp_ha.so",
+        "parameters": {
+          "high-availability": [
+            {
+              "this-server-name": "server1",
+              "mode": "hot-standby",
+              "peers": [
+                {
+                  "name": "server1",
+                  "url": "http://[2001:db8::2]:8000/",
+                  "role": "primary"
+                },
+                {
+                  "name": "server2",
+                  "url": "http://[2001:db8::3]:8000/",
+                  "role": "standby"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "subnet6": [
+      {
+        "id": 1,
+        "subnet": "2001:db8:0:1::/64",
+        "interface": "eth1",
+        "pools": [
+          {
+            "pool": "2001:db8:0:1::1:0 - 2001:db8:0:1::1:ffff"
+          }
+        ],
+        "pd-pools": [
+          {
+            "prefix": "2001:db8:100::",
+            "prefix-len": 40,
+            "delegated-len": 56
+          }
+        ]
+      }
+    ],
+    "loggers": [
+      {
+        "name": "kea-dhcp6",
+        "output-options": [
+          {
+            "output": "kea-dhcp6.log"
+          }
+        ],
+        "severity": "INFO"
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+<p>on kea1: 
+  <code class=code2>cp /dev/null /etc/kea/kea-dhcp6.conf</code>
+  <code class=code2>nano /etc/kea/kea-dhcp6.conf</code>
+  Now paste the the configuration content above into the file
+  press <code class=code2>ctrl+o</code> to save
+  press <code class=code2>ctrl+x</code> to exit
+  test the configuration: <code class=code2>kea-dhcp6 -T /etc/kea/kea-dhcp6.conf</code> watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.
+on kea2:
+  <code class=code2>cp /dev/null /etc/kea/kea-dhcp6.conf</code>
+  <code class=code2>nano /etc/kea/kea-dhcp6.conf</code>
+  Now paste the the configuration content above into the file
+  Find the line: <code class=code2>"this-server-name": "server1",</code> and change to <code class=code2>"this-server-name": "server2",</code>
+  press <code class=code2>ctrl+o</code> to save
+  press <code class=code2>ctrl+x</code> to exit
+  test the configuration: <code class=code2>kea-dhcp6 -T /etc/kea/kea-dhcp6.conf</code> watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.</p>
+
+<p>Now start <code class=code2>kea-dhcp6</code>:
+  On both "kea1" and "kea2":
+    Start it up: <code class=code2>systemctl enable --now isc-kea-dhcp6-server</code></p>
+
+<p>Check that it is running and HA is working by running this: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket6 - | jq</code> on either "kea1" or "kea2".  Run it a few times.  Eventually, the output should show <code class=code2>"state": "hot-standby"</code> for both the <code class=code2>"local"</code> and <code class=code2>"remote"</code> server in the output of this command.</p>
+
+<p>Now, from the "client" machine, run <code class=code2>perfdhcp</code> to make sure that everything seems to work: <code class=code2>perfdhcp -l eth1 -6 -r 1 -R 1 -p 2 -e address-and-prefix</code> The output should contain <code class=code2>drops: 0</code> and <code class=code2>received packets: 1</code> (or 2).  These should appear under both <code class=code2>***Statistics for: SOLICIT-ADVERTISE***</code> and <code class=code2>***Statistics for: REQUEST-REPLY***</code></p>
+
+<ol start="9">
+<li>Participants do step 8</li>
+<li>Eddy gives <code class=code2>stork-server</code> and <code class=code2>stork-agent</code> overview about how the technology works.</li>
+<li><p>Darren demonstrates installing <code class=code2>stork-server</code> on "stork".</p>
+
+<ul>
+<li>add the repo: <code class=code2>curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/setup.deb.sh' | sudo -E bash</code></li>
+<li>install the server: <code class=code2>apt install isc-stork-server</code></li>
+<li>Setup <code class=code2>stork-server</code> user and create database: <code class=code2>sudo -u postgres stork-tool db-create --db-name stork --db-user stork-server</code></li>
+<li>Change user used with the database by <code class=code2>stork-server</code>: 
+<ul>
+<li>edit the file: <code class=code2>nano /etc/stork/server.env</code> and find the line <code class=code2># STORK_DATABASE_USER_NAME=</code>.  Change this line to: <code class=code2>STORK_DATABASE_USER_NAME=stork-server</code> and find the line: <code class=code2># STORK_REST_PORT=</code> and change this line to: <code class=code2>STORK_REST_PORT=4780</code></li>
+<li>Press <code class=code2>ctrl+o</code> to save and <code class=code2>ctrl+x</code> to exit</li>
+</ul></li>
+<li>Start the server: <code class=code2>systemctl enable --now isc-stork-server</code></li>
+<li>Check the status: <code class=code2>systemctl status isc-stork-server</code></li>
+<li>The stork server should be available at <code class=code2>http://IP_address_of_your_server:4780</code></li>
+</ul></li>
+<li><p>Participants do step 9</p></li>
+<li>Darren demonstrates installing <code class=code2>stork-agent</code> on "kea1" and "kea2" and registering on "stork".
+<ul>
+<li>On both add the repo: <code class=code2>curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/setup.deb.sh' | sudo -E bash</code></li>
+<li>Install the agent: <code class=code2>apt install isc-stork-agent</code></li>
+<li>Register the agent: <code class=code2>sudo -u stork-agent stork-agent register --server-url http://192.168.1.4:4780</code></li>
+<li>Start the agent: <code class=code2>systemctl enable --now isc-stork-agent</code></li>
+<li>Login to the Stork UI: <code class=code2>http://IP_address_of_your_server:4780</code> (Username: <code class=code2>admin</code>.  Password: <code class=code2>admin</code>).  You will be forced to change your password.  Change it to the same password used to log into these systems.</li>
+<li>Click the "unauthorized machines" link in the banner near the top complaing about "Unregistered machines".</li>
+<li>You should see "kea1" and "kea2" listed here.  Check the box for each and click "Authorize Selected"</li>
+<li>Now refresh the web page.</li>
+<li>Click the hamburger menu and choose "DHCP" (DHCP may not be under the hamburger menu depending on width of page).  Click "Dashboard"</li>
+<li>Should see "Green checkmark" in "Status" for "kea1" and "kea2".</li>
+</ul></li>
+<li>Eddy describes cool and useful things about the Stork UI.</li>
+<li>Darren demonstrates exercise 4
+<ul>
+<li>Send DHCPv4 traffic: <code class=code2>perfdhcp -l eth1 -4 -r 10 -R 100 -p 11</code> This will be somewhere around 100 packets.</li>
+<li>Click refresh button next to DHCP Dashboard title.  Should see the IPv4 subnet filled 40% with green.  A hover should show something like 100 assigned addresses.</li>
+<li>Click "DHCP &gt; Leases Search" menu.</li>
+<li>Enter: <code class=code2>00:0c:01:02:03:04</code> in the "Search leases" box and press "Enter" on the keyboard.</li>
+<li>Two leases should be returned (one from each Kea server).</li>
+<li>Send DHCPv6 traffic: <code class=code2>perfdhcp -l eth1 -6 -r 10 -R 100 -p 11 -e address-and-prefix</code></li>
+<li>Click "DHCP &gt; Dashboard" you may have to click the refresh button next to DHCP Dashboard title a couple times.  Eventually a hover should show around 100 clients for "Assigned NAs" and the "Assigned PDs".</li>
+<li>Click "DHCP &gt; Leases Search" menu.</li>
+<li>Type: <code class=code2>00:01:00:01:31:a2:0e:26:00:0c:01:02:03:04</code> in the "Search leases" box.</li>
+<li>You should see 4 leases (2 from each kea server) of two each IA<em>NA and IA</em>PD.</li>
+<li>Eddy talks about that.</li>
+<li>Perhaps Eddy talks about interesting things about the lease search here (such as upcoming wildcard search).</li>
+</ul></li>
+<li>Participants now do exercise 4.</li>
+<li>Now Darren does exercise 5
+<ul>
+<li>Connect to the client machine a second time as you will need two windows in which to run <code class=code2>perfdhcp</code> simultaneously (once for dhcp4 and once for dhcp6).</li>
+<li>in the dhcp4 client window type: <code class=code2>perfdhcp -l eth1 -4 -r 10 -R 100 -Y 1 -y 3600 -t 15</code></li>
+<li>In the dhcp6 client window type: <code class=code2>perfdhcp -l eth1 -6 -r 10 -R 100 -e address-and-prefix -Y 1 -y 3600 -t 15</code></li>
+<li>Now shut down <code class=code2>kea-dhcp4</code> on kea1: <code class=code2>systemctl stop isc-kea-dhcp4-server</code></li>
+<li>Should start to see drops in your dhcp4 client window</li>
+<li>On kea2 execute the following: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket4 - | jq</code> a few times.  Eventually you should see <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.</li>
+<li>Look at "DHCP &gt; Dashboard" in the Stork interface and there should be a warning triangle and "partner-down" in the "HA State" for kea2.  kea1 should have a red X in status and "unavailable" in the HA State.</li>
+<li>Drops should stop incrementing in your dhcp4 client window.</li>
+<li>Now, repeat this for <code class=code2>kea-dhcp6</code>. Shut down <code class=code2>kea-dhcp6</code>: <code class=code2>systemctl stop isc-kea-dhcp6-server</code> on kea1.</li>
+<li>Should start to see drops in your dhcp6 client window</li>
+<li>on kea2 execute the following: <code class=code2>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket6 - | jq</code> a few times. You should again see the same result of <code class=code2>partner-down</code> as described earlier.</li>
+<li>Over in the Stork interface, click the refresh button next to "DHCP Dashboard".  You should see similar states for the "DHCPv6" services as previously seen in "DHCPv4".</li>
+<li>You will notice in the "Events" log on the Stork interface that times for the beginnings of the trouble are shown.</li>
+<li>Drops should stop incrementing in your dhcp6 client window.</li>
+<li>Now start both services back up on kea1: <code class=code2>systemctl start isc-kea-dhcp4-server</code> and <code class=code2>systemctl start isc-kea-dhcp6-server</code></li>
+<li>You can watch the state changes with the API commands shown earlier and also the "Events" log in Stork, and finally, by clicking the refresh button next to "DHCP Dashboard" in the Stork interface (note that this part of Stork does not auto-refresh).</li>
+<li>Stop <code class=code2>perfdhcp</code> in the dhcp4 and dhcp6 client windows.</li>
+<li>Eddy perhaps talks a bit here about HA failover events and Stork in general.</li>
+</ul></li>
+<li>Now the participants do exercise 5.</li>
+<li>Now Darren does exercise 6 (add a subnet).
+<ul>
+<li>Click on "DHCP &gt; Subnets"</li>
+<li>Click "+ New Subnet"</li>
+<li>Enter <code class=code2>2001:db8:0:2::/64</code> in the "Subnet" box and click "Proceed".</li>
+<li>Choose both DHCPv6 servers in "Assignments &gt; DHCP Servers"</li>
+<li>Click "+ Add Pool"</li>
+<li>Type <code class=code2>2001:db8:0:2::1:0</code> in "First Address and <code class=code2>2001:db8:0:2::1:ffff</code> in "Last Address"</li>
+<li>Now Pick both DHCPv6 servers in "Assignments &gt; DHCP Servers" just below the pool info you just added.</li>
+<li>Now click "Submit" way at the bottom of the page.</li>
+<li>I just realized I forgot to add the prefix delegation.  Lets do that now</li>
+<li>Click "Edit".</li>
+<li>Click "+ Add Pool" under "Prefix Delegation Pools"</li>
+<li>Enter "2001:db8:200::/40" in "Pool Prefix"</li>
+<li>Enter "56" in "Delegated Length"</li>
+<li>Choose both "DHCPv6" servers in "Assignments &gt; DHCP Servers"</li>
+<li>Click "Submit" way at the bottom of the page.</li>
+<li>Eddy talks about the interface and what we are seeing here.</li>
+</ul></li>
+<li>Now participants do exercise 6</li>
+<li>and we are done!</li>
+</ol>
+
+<h2>Question(s)</h2>
+
+<ul>
+<li>Should we do anything with <code class=code2>kea-dhcp-ddns</code>?  We could show some Stork DNS features.  This could start to run into time constraints.</li>
+</ul>
+
+<h2>Notes</h2>
+
+<ul>
+<li>We will use port <code class=code2>7223</code> for <code class=code2>ssh</code> because some people attack port 22 all the time (causing ssh to not answer).
+<ul>
+<li>e.g., <code class=code2>ssh -p 7223 root@104.237.139.215</code></li>
+</ul></li>
+<li>We will set the hostnames to that in quotes in the VMs section above.</li>
+<li>We need to preinstall <code class=code2>socat</code> and <code class=code2>jq</code>: <code class=code2>apt install jq socat</code></li>
+<li>We need to preinstall postgres and configure: <code class=code2>sudo apt install postgresql</code> and <code class=code2>sudo systemctl enable --now postgresql</code></li>
+<li>We need to setup "kea1" and "kea2" <code class=code2>/etc/hosts</code> to point the hostname at the private <code class=code2>eth1</code> IP.</li>
+<li>We need to setup "kea1" and "kea2" in <code class=code2>/etc/hosts</code> on "stork" also because no dns server :)</li>
+<li>We have decided not to show editing host reservations with Stork because we would need to have database support in Kea which would complicate things.  We could add a reservaiton in the configuration itself if someone thinks that is a good idea, but Stork will only show it, not manage it.</li>
+</ul>
+</body></html>
