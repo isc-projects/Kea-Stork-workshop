@@ -1,0 +1,158 @@
+<!DOCTYPE HTML><html><head><link rel="stylesheet" href="presentation.css"><script src="copy2clipboard.js"></script></head><body>
+<h1>NANOG 98 Kea / Stork Workshop</h1>
+
+<h3>Exercise 3</h3>
+
+<p>Configure, start, and test <code class=code2>kea-dhcp6</code> on "kea1" and "kea2".  Having just completed Exercise 2, the below steps may seem familiar with only slight differences.</p>
+
+<ol>
+<li>Copy the <code class=code2>kea-dhcp6</code> configuration:</li>
+</ol>
+
+<div class=copyCode id=button216><div class=copyFont id=copybutton216><a href="javascript:void(0)" onclick="copy2clipboard(216);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=216>
+{
+  "Dhcp6": {
+    "control-socket": {
+      "socket-type": "unix",
+      "socket-name": "socket6"
+    },
+    "interfaces-config": {
+      "interfaces": [
+        "eth1"
+      ]
+    },
+    "lease-database": {
+      "type": "memfile",
+      "name": "leases6.csv"
+    },
+    "hooks-libraries": [
+      {
+        "library": "libdhcp_lease_cmds.so"
+      },
+      {
+        "library": "libdhcp_stat_cmds.so"
+      },
+      {
+        "library": "libdhcp_subnet_cmds.so"
+      },
+      {
+        "library": "libdhcp_ha.so",
+        "parameters": {
+          "high-availability": [
+            {
+              "this-server-name": "server1",
+              "mode": "hot-standby",
+              "peers": [
+                {
+                  "name": "server1",
+                  "url": "http://[2001:db8::2]:8000/",
+                  "role": "primary"
+                },
+                {
+                  "name": "server2",
+                  "url": "http://[2001:db8::3]:8000/",
+                  "role": "standby"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "subnet6": [
+      {
+        "id": 1,
+        "subnet": "2001:db8:0:1::/64",
+        "interface": "eth1",
+        "pools": [
+          {
+            "pool": "2001:db8:0:1::1:0 - 2001:db8:0:1::1:ffff"
+          }
+        ],
+        "pd-pools": [
+          {
+            "prefix": "2001:db8:100::",
+            "prefix-len": 40,
+            "delegated-len": 56
+          }
+        ]
+      }
+    ],
+    "loggers": [
+      {
+        "name": "kea-dhcp6",
+        "output-options": [
+          {
+            "output": "kea-dhcp6.log"
+          }
+        ],
+        "severity": "INFO"
+      }
+    ]
+  }
+}
+</code></pre></div>
+
+<ol start="2">
+<li>Paste the configuration into <code class=code2>/etc/kea/kea-dhcp6.conf</code> on "kea1".  This is best accomplished by truncating the file (which will already have content) before opening it and adding the configuration.</li>
+</ol>
+
+<div class=copyCode id=button304><div class=copyFont id=copybutton304><a href="javascript:void(0)" onclick="copy2clipboard(304);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=304>
+cp /dev/null /etc/kea/kea-dhcp6.conf &amp;&amp; \
+nano /etc/kea/kea-dhcp6.conf
+</code></pre></div>
+
+<p>Paste the text into what should be a blank editor window.  Press <code class=code2>ctrl+o</code> to write out the file.  Press <code class=code2>ctrl+x</code> to exit <code class=code2>nano</code>.</p>
+
+<ol start="3">
+<li>Test the configuration for syntax errors on "kea1":</li>
+</ol>
+
+<div class=copyCode id=button315><div class=copyFont id=copybutton315><a href="javascript:void(0)" onclick="copy2clipboard(315);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=315>
+kea-dhcp6 -T /etc/kea/kea-dhcp6.conf
+</code></pre></div>
+
+<p>Watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.</p>
+
+<ol start="4">
+<li>Repeat step 2 on "kea2".  Before writing the file, locate <code class=code2>"this-server-name": "server1",</code> in the file.  This can be quickly found by pressing <code class=code2>ctrl+w</code> and typing or pasting some part of the text into the prompt.  Change the text to: <code class=code2>"this-server-name": "server2",</code> and write out the file as you did on "kea1".</li>
+<li>Repeat the configuration syntax test performed in step 3 on "kea2".</li>
+<li>And finally, we can start <code class=code2>kea-dhcp6</code> on both "kea1" and "kea2" with the below command:</li>
+</ol>
+
+<div class=copyCode id=button327><div class=copyFont id=copybutton327><a href="javascript:void(0)" onclick="copy2clipboard(327);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=327>
+systemctl enable --now isc-kea-dhcp6-server
+</code></pre></div>
+
+<p>Check the status to make sure that the service is running:</p>
+
+<div class=copyCode id=button333><div class=copyFont id=copybutton333><a href="javascript:void(0)" onclick="copy2clipboard(333);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=333>
+systemctl status isc-kea-dhcp6-server
+</code></pre></div>
+
+<p>Look for the text: <code class=code2>Active: active (running) since ...</code></p>
+
+<ol start="7">
+<li>Use the API to test the current status of High Availability with the following command:</li>
+</ol>
+
+<div class=copyCode id=button343><div class=copyFont id=copybutton343><a href="javascript:void(0)" onclick="copy2clipboard(343);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=343>
+echo '{ "command": "status-get" }' | socat unix:/run/kea/socket6 - | jq
+</code></pre></div>
+
+<p>This can be done on either "kea1", "kea2" or both.  Look for <code class=code2>"state": "hot-standby"</code> for both the <code class=code2>"local"</code> and <code class=code2>"remote"</code> server in the output.</p>
+
+<ol start="8">
+<li>A final test of <code class=code2>kea-dhcp6</code> simulating clients using <code class=code2>perfdhcp</code> from "client" can now be performed using the command below:</li>
+</ol>
+
+<div class=copyCode id=button353><div class=copyFont id=copybutton353><a href="javascript:void(0)" onclick="copy2clipboard(353);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=353>
+perfdhcp -l eth1 -6 -r 1 -R 1 -p 2 -e address-and-prefix
+</code></pre></div>
+
+<p>Both the <code class=code2>***Statistics for: SOLICIT-ADVERTISE***</code> and <code class=code2>***Statistics for: REQUEST-REPLY***</code> should contain <code class=code2>drops: 0</code> and <code class=code2>received packets: 1</code> (or possibly "2").</p>
+
+<br>
+<button onclick="window.location.href='exercise2.html'"> < </button> | <button onclick="window.location.href='exercise4.html'"> > </button>
+
+</body></html>
