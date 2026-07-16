@@ -6,39 +6,42 @@
 <p>Installing, starting, logging into, and setting a password on <code class=code2>stork-server</code> on the "stork" VM.</p>
 
 <ol>
-<li>Add the repository to "stork":</li>
-</ol>
+<li>Add the repository to "stork":
 
 <div class=copyCode id=button367><div class=copyFont id=copybutton367><a href="javascript:void(0)" onclick="copy2clipboard(367);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=367>
 curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/setup.deb.sh' | sudo -E bash
 </code></pre></div>
+</li>
+</ol>
 
 <ol start="2">
-<li>Install the <code class=code2>stork-server</code> on "stork":</li>
-</ol>
+<li>Install the <code class=code2>stork-server</code> on "stork":
 
 <div class=copyCode id=button375><div class=copyFont id=copybutton375><a href="javascript:void(0)" onclick="copy2clipboard(375);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=375>
 apt install isc-stork-server
 </code></pre></div>
+</li>
+</ol>
 
 <ol start="3">
-<li>Setup the "stork-server" user and create the database:</li>
-</ol>
+<li>Setup the "stork-server" user and create the database:
 
 <div class=copyCode id=button383><div class=copyFont id=copybutton383><a href="javascript:void(0)" onclick="copy2clipboard(383);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=383>
 sudo -u postgres stork-tool db-create --db-name stork --db-user stork-server
 </code></pre></div>
+</li>
+</ol>
 
 <ol start="4">
 <li>Change the user used by <code class=code2>stork-server</code> to access the database to "stork-server", and set the correct port to be used on "stork":
 <ul>
-<li>Edit the file "/etc/stork/server.env":</li>
-</ul></li>
-</ol>
+<li>Edit the file "/etc/stork/server.env":
 
 <div class=copyCode id=button394><div class=copyFont id=copybutton394><a href="javascript:void(0)" onclick="copy2clipboard(394);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=394>
 nano /etc/stork/server.env
 </code></pre></div>
+</li>
+</ul>
 
 <ul>
 <li>Find the line <code class=code2># STORK_DATABASE_USER_NAME=</code></li>
@@ -47,28 +50,38 @@ nano /etc/stork/server.env
 <li>Change this line to: <code class=code2>STORK_REST_PORT=4780</code></li>
 <li>Press <code class=code2>ctrl+o</code> to save and <code class=code2>ctrl+x</code> to exit</li>
 </ul>
+</li>
+</ol>
 
 <ol start="5">
-<li>Start the server on "stork":</li>
-</ol>
+<li>Start the server on "stork":
 
 <div class=copyCode id=button410><div class=copyFont id=copybutton410><a href="javascript:void(0)" onclick="copy2clipboard(410);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=410>
 systemctl enable --now isc-stork-server
 </code></pre></div>
+</li>
+</ol>
 
 <ol start="6">
-<li>Check that it started correctly by checking the status:</li>
-</ol>
+<li>Check that it started correctly by checking the status:
 
 <div class=copyCode id=button418><div class=copyFont id=copybutton418><a href="javascript:void(0)" onclick="copy2clipboard(418);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=418>
 systemctl status isc-stork-server
 </code></pre></div>
+</li>
+</ol>
 
 <ol start="7">
-<li>The Stork server should now be available here: <code class=code2>http://IP_address_of_your_server:4780</code></li>
+<li>The Stork server should now be available here: <code class=code2>http://IP_address_of_your_server:4780</code>
+</li>
 </ol>
 
 <br>
-<button onclick="window.location.href='exercise3.html'"> < </button> | <button onclick="window.location.href='exercise5.html'"> > </button>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class='bottom-color'><div class='bottom-div'><button onclick="window.location.href='exercise3.html'"> < </button> | <button onclick="window.location.href='exercise5.html'"> > </button></div></div>
 
 </body></html>

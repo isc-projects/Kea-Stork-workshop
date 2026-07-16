@@ -1,6 +1,56 @@
 html, body {
   font-family: sans-serif, Sans-Serif;
   line-height: 1.8;
+  width: 80%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* button styling */
+button {
+  /* button styling */
+  background-color: #dedede;
+  color: black;
+  padding: 5px 5px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid black;
+  box-shadow: 3px 3px black, 2px 2px black, 1px 1px black;
+}
+button:hover {
+  /* button styling on hover */
+  background-color: #73AD21;
+  box-shadow: 3px 3px #476b14, 2px 2px #476b14, 1px 1px #476b14;
+  color: white;
+}
+button:active {
+  /* clicked button styling (nice 3D effect) */
+  box-shadow: 1px 1px #476b14, 0px 0px #476b14, 0px 0px #476b14;
+  translate: 2px 2px 2px;
+}
+button:disabled {
+  /* disabled buttons grayed out and already look clicked */
+  background-color: #f2f2f2;
+  translate: 2px 2px 2px;
+  box-shadow: 1px 1px black, 0px 0px black, 0px 0px black;
+  color: #cccccc;
+  cursor: default;
+}
+
+
+/* div with navigation buttons always visibile at the bottom of the page */
+div.bottom-color {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  margin-left: -20%;
+  background-color: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.bottom-div {
 }
 
 /* code block styling */
