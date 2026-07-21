@@ -1,0 +1,74 @@
+<!DOCTYPE HTML><html><head><link rel="stylesheet" href="presentation.css"><script src="copy2clipboard.js"></script></head><body>
+<h1>NANOG 98 Kea / Stork Workshop</h1>
+
+<h3>Exercise 5</h3>
+
+<p>Installing, registering, and starting the <code class=code2>stork-agent</code> on "kea1" and "kea2".  Note that various commands in the following exercise will contain: <code class=code2>IP_address_of_your_server</code> which must be replaced with the IP address of your "stork" server.</p>
+
+<ol>
+<li>Add the repository to both "kea1" and "kea2":
+
+<div class=copyCode id=button434><div class=copyFont id=copybutton434><a href="javascript:void(0)" onclick="copy2clipboard(434);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=434>
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/setup.deb.sh' | sudo -E bash
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="2">
+<li>Install the <code class=code2>stork-agent</code> on both "kea1" and "kea2":
+
+<div class=copyCode id=button442><div class=copyFont id=copybutton442><a href="javascript:void(0)" onclick="copy2clipboard(442);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=442>
+apt install isc-stork-agent
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="3">
+<li>Now register the agent from both "kea1" and "kea2" to the <code class=code2>stork-server</code> on "stork":
+
+<div class=copyCode id=button450><div class=copyFont id=copybutton450><a href="javascript:void(0)" onclick="copy2clipboard(450);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=450>
+sudo -u stork-agent stork-agent register --server-url http://IP_address_of_your_server:4780
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="4">
+<li>Now start the <code class=code2>stork-agent</code> on both "kea1" and "kea2":
+
+<div class=copyCode id=button458><div class=copyFont id=copybutton458><a href="javascript:void(0)" onclick="copy2clipboard(458);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=458>
+systemctl enable --now isc-stork-agent
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="5">
+<li>Check the status of the <code class=code2>stork-agent</code> on both "kea1" and "kea2" to make sure it is running:
+
+<div class=copyCode id=button466><div class=copyFont id=copybutton466><a href="javascript:void(0)" onclick="copy2clipboard(466);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=466>
+systemctl status isc-stork-agent
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="6">
+<li><p>Log in to the Stork UI using the folowing:
+URL: <code class=code2>http://IP_address_of_your_server:4780</code>
+Username: <code class=code2>admin</code>
+Password: <code class=code2>admin</code>
+Note that you will be forced to change your password.  Please use the same password that was supplied to you to log in to these systems as the new password.</p></li>
+<li><p>Now that you are logged in, please click the "unauthorized machines" link in the banner near the top complaining about "Unregistered machines". You should see "kea1" and "kea2" listed here. Check the box for each and click "Authorize Selected".  This will authorize the <code class=code2>stork-agent</code> services on "kea1" and "kea2" that were registered in step 3, allowing them to talk to the <code class=code2>stork-server</code> on "stork".</p></li>
+<li><p>Refresh the page.  This would not be strictly necessary but there would be a substantial delay before the UI was updated with new items in the menus if not done.</p></li>
+<li><p>Click the hamburger menu and choose "DHCP" (DHCP may not be under the hamburger menu depending on width of your web browser window).</p></li>
+<li><p>Click "Dashboard".</p></li>
+<li><p>There should be a green checkmark ✅ in "Status" for "kea1" and "kea2".</p></li>
+</ol>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class='bottom-color'><div class='bottom-div'><button onclick="window.location.href='exercise4.html'"> < </button> | <button onclick="window.location.href='exercise6.html'"> > </button></div></div>
+
+</body></html>

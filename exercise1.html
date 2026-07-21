@@ -1,0 +1,44 @@
+<!DOCTYPE HTML><html><head><link rel="stylesheet" href="presentation.css"><script src="copy2clipboard.js"></script></head><body>
+<h1>NANOG 98 Kea / Stork Workshop</h1>
+
+<h3>Exercise 1</h3>
+
+<p>Install the Kea software on "kea1", "kea2", and <code class=code2>perfdhcp</code> on "client".</p>
+
+<ol>
+<li>Add the repository on "kea1", "kea2" and "client":
+
+<div class=copyCode id=button36><div class=copyFont id=copybutton36><a href="javascript:void(0)" onclick="copy2clipboard(36);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=36>
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/kea-3-0/setup.deb.sh' | sudo -E bash
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="2">
+<li>Install the <code class=code2>isc-kea</code> package on "kea1" and "kea2":
+
+<div class=copyCode id=button44><div class=copyFont id=copybutton44><a href="javascript:void(0)" onclick="copy2clipboard(44);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=44>
+apt install isc-kea
+</code></pre></div>
+</li>
+</ol>
+
+<ol start="3">
+<li>Install the <code class=code2>perfdhcp</code> package on "client":
+
+<div class=copyCode id=button52><div class=copyFont id=copybutton52><a href="javascript:void(0)" onclick="copy2clipboard(52);"><b><font size=5px>&#x2398;</font></b> COPY</a></div><pre><code id=52>
+apt install isc-kea-perfdhcp
+</code></pre></div>
+<br>
+</li>
+</ol>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class='bottom-color'><div class='bottom-div'><button onclick="window.location.href='introduction.html'"> < </button> | <button onclick="window.location.href='exercise2.html'"> > </button></div></div>
+
+</body></html>

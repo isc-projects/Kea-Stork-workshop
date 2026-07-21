@@ -1,0 +1,35 @@
+
+<!DOCTYPE HTML><html><head><link rel="stylesheet" href="presentation.css"><script src="copy2clipboard.js"></script></head><body>
+<h1>NANOG 98 Kea / Stork Workshop</h1>
+
+<h3>Exercise 8</h3>
+
+<p>Add and edit a new subnet to "kea1" and "kea2" using the Stork UI.</p>
+
+<ol>
+<li><p>Click on "Subnets" under the "DHCP" menu.</p></li>
+<li><p>Click on "+ New Subnet".</p></li>
+<li><p>Enter: <code class=code2>2001:db8:0:2::/64</code> in the "Subnet" box and click "Proceed".</p></li>
+<li><p>Choose both DHCPv6 servers in "Assignments &gt; DHCP Servers".</p></li>
+<li><p>Click "+ Add Pool".</p></li>
+<li><p>Type <code class=code2>2001:db8:0:2::1:0</code> in "First Address" and <code class=code2>2001:db8:0:2::1:ffff</code> in "Last Address".</p></li>
+<li><p>Now Pick both DHCPv6 servers in "Assignments &gt; DHCP Servers" just below the pool info you just added.</p></li>
+<li><p>Click the "Submit" button at the very bottom of the page.</p></li>
+<li><p>At this point, we have realized that we forgot to add the prefix delegation.  Now we will edit the subnet that was just added to correct this omission.</p></li>
+<li><p>Click "Edit".</p></li>
+<li><p>Click "+ Add Pool" under "Prefix Delegation Pools".</p></li>
+<li><p>Enter "2001:db8:200::/40" in "Pool Prefix"</p></li>
+<li><p>Enter "56" in "Delegated Length"</p></li>
+<li><p>Choose both "DHCPv6" servers in "Assignments &gt; DHCP Servers"</p></li>
+<li><p>Click the "Submit" button at the very bottom of the page.</p></li>
+</ol>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<div class='bottom-color'><div class='bottom-div'><button onclick="window.location.href='exercise7.html'"> < </button> | <button type="button" disabled> > </button></div></div>
+
+</body></html>
