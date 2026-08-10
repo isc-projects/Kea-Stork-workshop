@@ -1,4 +1,12 @@
+:root {
+  color-scheme: light dark;
+  --bg-color: light-dark(#ffffff, #000000);
+  --text-color: light-dark(#000000, #ffffff);
+}
+
 html, body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: sans-serif, Sans-Serif;
   line-height: 1.8;
 /*  width: 80%; */
