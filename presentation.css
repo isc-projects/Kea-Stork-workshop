@@ -9,7 +9,6 @@ html, body {
   color: var(--text-color);
   font-family: sans-serif, Sans-Serif;
   line-height: 1.8;
-/*  width: 80%; */
   max-width: 950px;
   margin: 0 auto;
   padding: 10px;
@@ -73,20 +72,15 @@ div.coopCodeContainer {
 div.copyFont {
   width: 10%;
   text-align: right;
-/*  line-height: 1.0; */
 }
 div.copyCode {
   width: 90%;
   display: flex;
   align-items: center;
-/*  line-height: 1.0; */
 }
 pre {
-/*  background-color: #f3f3f3; */
-/*  border-radius: 4px; */
   padding: 4px;
   overflow-x: auto;
-/*  line-height: 1.2; */
 }
 code {
   font-family: Monospace;
