@@ -3,11 +3,11 @@
 
 <h3>Exercise 7</h3>
 
-<p>Simulate more client traffic like in exercise 6.  Experiment with HA and status reports of same in the Stork UI by stopping <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1". </p>
+<p>Simulate more client traffic as in exercise 6.  Experiment with HA and its status reports in the Stork UI by stopping <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1". </p>
 
 <ol>
-<li><p>For this exercise, you will need ssh sessions to "client" as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Please connect to "client" a second time.  We will refer to these sessions as "dhcp4 client" and "dhcp6 client", so please also decide which is which for you.</p></li>
-<li>On "dhcp4 client", please run a simulation of 100 DHCPv4 clients at a rate of 10 per second until canceled by running:
+<li><p>Connect to "client" a second time via ssh, as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Choose on session to call "dhcp4 client" and one to call "dhcp6 client".</p></li>
+<li>On "dhcp4 client", run a simulation of 100 DHCPv4 clients at a rate of 10 per second with the following command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button524>
     <code id=524>perfdhcp -l eth1 -4 -r 10 -R 100 -Y 1 -y 3600 -t 15</code>
@@ -20,7 +20,7 @@
 </ol>
 
 <ol start="3">
-<li>On "dhcp6 client", please run a simulation of 100 DHCPv6 clients at a rate of 10 per second requesting both an <code class=code2>IA_NA</code> and an <code class=code2>IA_PD</code> until canceled by running:
+<li>On "dhcp6 client", run a simulation of 100 DHCPv6 clients at a rate of 10 per second requesting both an <code class=code2>IA_NA</code> and an <code class=code2>IA_PD</code> with the following command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button532>
     <code id=532>perfdhcp -l eth1 -6 -r 10 -R 100 -e address-and-prefix -Y 1 -y 3600 -t 15</code>
@@ -33,7 +33,7 @@
 </ol>
 
 <ol start="4">
-<li>Now we will simulate an outage on "kea1" of the <code class=code2>kea-dhcp4</code> service by stopping the service by running:
+<li>Simulate an outage of the <code class=code2>kea-dhcp4</code> service on "kea1" by running the following command to stop the service:
 <div class=coopCodeContainer>
   <div class=copyCode id=button540>
     <code id=540>systemctl stop isc-kea-dhcp4-server</code>
@@ -46,8 +46,8 @@
 </ol>
 
 <ol start="5">
-<li><p>The <code class=code2>perfdhcp</code> running in your "dhcp4 client" window should start to report drops.</p></li>
-<li>Now we will check the status to see if the failover has yet occurred.  the <code class=code2>-Y 1 -y 3600</code> parameters passed to <code class=code2>perfdhcp</code> tells the tool to simulate an outage by reporting that it has been an increasing number of seconds that it has been trying to get an address as a real client would.  Kea watches for this when performing failover calculations.  To check the current status, execute this command on "kea2":
+<li><p>Verify that the <code class=code2>perfdhcp</code> instance running in your "dhcp4 client" window starts to report drops.</p></li>
+<li>Check the status to see if the failover has occurred.  The <code class=code2>-Y 1 -y 3600</code> parameters passed to <code class=code2>perfdhcp</code> tell the tool to simulate an outage by reporting that an increasing number of seconds have elapsed while it has been trying to get an address as a real client would.  Kea watches for this when performing failover calculations.  To check the current status, execute this command on "kea2":
 <div class=coopCodeContainer>
   <div class=copyCode id=button549>
     <code id=549>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket4 - | jq</code>
@@ -56,14 +56,14 @@
     <a href="javascript:void(0)" onclick="copy2clipboard(549);"><b><font size=5px>&#x2398;</font></b> COPY</a>
   </div>
 </div>
-<p>In the output from the command, look for <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.  It may take a couple of minutes for this to occur.  There are parameters that can be set in the Kea configuration that control how quickly this happens.  After the state matches that described here, move on to step 7.</p>
+<p>In the output from the command, look for <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.  It may take a couple of minutes for this to occur: there are parameters that can be set in the Kea configuration to control how quickly this happens.  Once the value of <code class=code2>"state"</code> is <code class=code2>"partner-down"</code>, move on to step 7.</p>
 </li>
 </ol>
 
 <ol start="7">
-<li><p>Look again at the "Dashboard" under the "DHCP" menu in the Stork UI.  There should be a warning triangle and "partner-down" in the "HA State" for kea2. kea1 should have a red X in status and "unavailable" in the HA State.</p></li>
-<li><p>Drops should have stopped incrementing on "dhcp4 client".</p></li>
-<li>Now we will shut down <code class=code2>kea-dhcp6</code> on "kea1" by executing the command:
+<li><p>Look again at the "Dashboard" under the "DHCP" menu in the Stork UI.  There should be a warning triangle and "partner-down" in the "HA State" for "kea2". "kea1" should have a red X in status and "unavailable" in the HA State.</p></li>
+<li><p>Verify that drops have stopped incrementing on "dhcp4 client".</p></li>
+<li>Shut down <code class=code2>kea-dhcp6</code> on "kea1" by executing the command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button561>
     <code id=561>systemctl stop isc-kea-dhcp6-server</code>
@@ -76,8 +76,8 @@
 </ol>
 
 <ol start="10">
-<li><p>Drops should start incrementing in <code class=code2>perfdhcp</code> running on "dhcp6 client".</p></li>
-<li>As was done in step 6 for <code class=code2>kea-dhcp4</code>, the current status of <code class=code2>kea-dhcp6</code> will be checked on "kea2" by running:
+<li><p>Verify that drops have started incrementing in <code class=code2>perfdhcp</code> running on "dhcp6 client".</p></li>
+<li>As in step 6 for <code class=code2>kea-dhcp4</code>, check the current status of <code class=code2>kea-dhcp6</code> on "kea2" by running:
 <div class=coopCodeContainer>
   <div class=copyCode id=button570>
     <code id=570>echo '{ "command": "status-get" }' | socat unix:/run/kea/socket6 - | jq</code>
@@ -91,10 +91,10 @@
 </ol>
 
 <ol start="12">
-<li><p>In the Stork UI, states for <code class=code2>kea-dhcp6</code> on "kea1" and "kea2" should be similar to that described in step 7.</p></li>
-<li><p>You will notice in the "Events" log on the Stork UI that times for the beginnings of the trouble are shown.</p></li>
-<li><p>Drops should have stopped  incrementing in <code class=code2>perfdhcp</code> running on "dhcp6 client".</p></li>
-<li>Now the outage can be stopped by starting <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1" by running the following commands:
+<li><p>Verify in the Stork UI that the states for <code class=code2>kea-dhcp6</code> on "kea1" and "kea2" are similar to those described in step 7.</p></li>
+<li><p>Notice in the "Events" log on the Stork UI that the times for the onset of trouble are shown.</p></li>
+<li><p>Verify that drops have stopped  incrementing in <code class=code2>perfdhcp</code> running on "dhcp6 client".</p></li>
+<li>Conclude the outage by restarting <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1" with the following commands:
 <div class=coopCodeContainer>
   <div class=copyCode id=button583>
     <code id=583>systemctl start isc-kea-dhcp4-server &amp;&amp; systemctl start isc-kea-dhcp6-server</code>
@@ -107,7 +107,7 @@
 </ol>
 
 <ol start="16">
-<li><p>You can use the API commands described in step 6 and step 11 to check the status of HA.  You can watch the "Events" log in the Stork UI for events relating to the return to service.  Finally, clicking the refresh button next to "DHCP Dashboard" in the Stork UI should, after a couple of minutes, show that everything is working again.</p></li>
+<li><p>Use the API commands described in steps 6 and 11 to check the status of HA.  Watch the "Events" log in the Stork UI for events relating to the return to service.  Finally, click the refresh button next to "DHCP Dashboard" in the Stork UI after a couple of minutes, and see that everything is working again.</p></li>
 <li><p>Stop <code class=code2>perfdhcp</code> on "dhcp4 client" and "dhcp6 client" by pressing <code class=code2>ctrl+c</code> in their respective ssh windows.</p>
 </li>
 </ol>

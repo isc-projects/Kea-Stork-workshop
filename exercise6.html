@@ -3,7 +3,7 @@
 
 <h3>Exercise 6</h3>
 
-<p>Simulate client traffic using <code class=code2>perfdhcp</code> on "client" to both <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code>.  Learn about various reporting in the Stork UI.</p>
+<p>Simulate client traffic using <code class=code2>perfdhcp</code> on "client" to both <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code>.  Learn about various reports available in the Stork UI.</p>
 
 <ol>
 <li>Send approximately 100 DHCPv4 packets simulating 100 clients.
@@ -20,10 +20,10 @@
 
 <ol start="2">
 <li><p>On the Stork UI, click the refresh button next to the DHCP Dashboard title.  The IPv4 subnet should appear about 40% filled with a green color.  Hovering over this indicator should report 100 assigned addresses.</p></li>
-<li><p>Click "Leases Search" under the "DHCP" menu on the top left (may be beneath a hamburger menu depending on the width of your screen).</p></li>
-<li><p>Enter <code class=code2>00:0c:01:02:03:04</code> in the "Search leases" box and press "Enter" on the keyboard.</p></li>
+<li><p>Click "Leases Search" under the "DHCP" menu on the top left (the main menu may collapse to a hamburger menu depending on the width of your screen).</p></li>
+<li><p>Type <code class=code2>00:0c:01:02:03:04</code> in the "Search leases" box and press "Enter".</p></li>
 <li><p>Two leases should be returned (one from each Kea server).  You can expand these records using the arrows to view more details about the leases.</p></li>
-<li>Now we will send DHCPv6 traffic to populate similar statistics, though this traffic will request both an address and a prefix delegation:
+<li>Send DHCPv6 traffic to populate similar statistics with this command which will request both an address and a prefix delegation:
 <div class=coopCodeContainer>
   <div class=copyCode id=button503>
     <code id=503>perfdhcp -l eth1 -6 -r 10 -R 100 -p 11 -e address-and-prefix -b duid=000200007ed90cc084d303000912</code>
@@ -36,11 +36,11 @@
 </ol>
 
 <ol start="7">
-<li><p>Click "Dashboard" under the "DHCP" menu (Reminder: this may be nestled under a hamburger menu depending on your screen width) to return to the dashboard.</p></li>
+<li><p>Click "Dashboard" under the "DHCP" menu (Reminder: the main menu may collapse to a hamburger menu depending on your screen width) to return to the dashboard.</p></li>
 <li><p>Click the same refresh button as before next to the DHCP Dashboard title.  You may have to click this button a couple of times.  Not much will change here as far as the bar filling with green as there are <em>a lot</em> of IPv6 addresses available here.  However, a hover should show around 100 "Assigned NAs" and the same for "Assigned PDs".</p></li>
-<li><p>Now let us return to the "Leases Search" page found under the "DHCP" menu.</p></li>
-<li><p>Type <code class=code2>00:02:00:00:7e:d9:0c:c0:00:0c:01:02:03:04</code> in the "Search leases" box and press enter on the keyboard.</p></li>
-<li><p>This time you should have four results instead of two.  Two will be <code class=code2>IA_NA</code> IPv6 addresses and the other two will be <code class=code2>IA_PD</code> prefix delegations.  As before, you can expand these leases to see further details.</p></li>
+<li><p>Return to the "Leases Search" page under the "DHCP" menu.</p></li>
+<li><p>Type <code class=code2>00:02:00:00:7e:d9:0c:c0:00:0c:01:02:03:04</code> in the "Search leases" box and press enter.</p></li>
+<li><p>This time you should have four results instead of two: two <code class=code2>IA_NA</code> IPv6 addresses and two <code class=code2>IA_PD</code> prefix delegations.  As before, you can expand these leases to see further details.</p></li>
 </ol>
 
 <br>
