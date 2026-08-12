@@ -6,7 +6,7 @@
 <p>Simulate more client traffic as in exercise 6.  Experiment with HA and its status reports in the Stork UI by stopping <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1". </p>
 
 <ol>
-<li><p>Connect to "client" a second time via ssh, as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Choose on session to call "dhcp4 client" and one to call "dhcp6 client".</p></li>
+<li><p>Connect to "client" a second time via ssh, as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Choose one session to call "dhcp4 client" and one to call "dhcp6 client".</p></li>
 <li>On "dhcp4 client", run a simulation of 100 DHCPv4 clients at a rate of 10 per second with the following command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button524>
@@ -56,7 +56,7 @@
     <a href="javascript:void(0)" onclick="copy2clipboard(549);"><b><font size=5px>&#x2398;</font></b> COPY</a>
   </div>
 </div>
-<p>In the output from the command, look for <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.  It may take a couple of minutes for this to occur: there are parameters that can be set in the Kea configuration to control how quickly this happens.  Once the value of <code class=code2>"state"</code> is <code class=code2>"partner-down"</code>, move on to step 7.</p>
+<p>In the output from the command, look for <code class=code2>"server-name": "server2",</code> with <code class=code2>"state": "partner-down",</code> and <code class=code2>"last-state": "unavailable",</code> with <code class=code2>"server-name": "server1",</code> in the <code class=code2>"remote": { }</code> section.  It may take a couple of minutes for this to occur; there are parameters that can be set in the Kea configuration to control how quickly this happens.  Once the value of <code class=code2>"state"</code> is <code class=code2>"partner-down"</code>, move on to step 7.</p>
 </li>
 </ol>
 
