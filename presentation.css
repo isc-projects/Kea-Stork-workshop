@@ -2,6 +2,8 @@
   color-scheme: light dark;
   --bg-color: light-dark(#ffffff, #000000);
   --text-color: light-dark(#000000, #ffffff);
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 html, body {
@@ -51,8 +53,8 @@ button:disabled {
 div.bottom-color {
   position: fixed;
   bottom: 0;
-  width: 100vw;
-  margin-left: -20%;
+  left: 0;
+  width: 100%;
   background-color: #f3f3f3;
   display: flex;
   justify-content: center;
