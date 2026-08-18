@@ -130,3 +130,14 @@ a.ANOSTYLE {
   /* Links with no style for image links */
   background-color: initial;
 }
+
+a.text:link, a.text:visited {
+  /* Style for text links */
+  background-color: initial;    
+}
+
+a.text:hover, a.text:active {
+  background-color: #73AD21;
+  border-radius: 12px;
+  color: white;
+}

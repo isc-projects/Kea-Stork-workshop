@@ -5,7 +5,7 @@
 <p>This document is for the hands-on portion of the workshop, where participants will perform several administrative functions related to Kea and Stork.  This is intended to simulate real-world installation, setup,
  and testing of a Kea and Stork platform.</p>
 
-<p>More information about Kea and Stork are available at https://www.isc.org/ .</p>
+<p>More information about Kea and Stork are available at <a href=https://www.isc.org/ target=_new class=text>https://www.isc.org/</a>.</p>
 
 <h2>Overview</h2>
 
@@ -18,10 +18,8 @@ to simulate DHCP clients for various tests.  "stork" will run <code class=code2>
 
 <ol>
 <li>Install the Kea software on "kea1", "kea2", and <code class=code2>perfdhcp</code> on "client".</li>
-<li>Add a <code class=code2>kea-dhcp4</code> configuration to "kea1" and "kea2".  Start <code class=code2>kea-dhcp4</code> on both servers.  Test <code class=code2>kea-dhcp4</code> to confirm it is functional, using <code class=code2>perfdhcp
-</code> from the "client" machine. </li>
-<li>Add a <code class=code2>kea-dhcp6</code> configuration to "kea1" and "kea2".  Start <code class=code2>kea-dhcp6</code> on both servers.  Test <code class=code2>kea-dhcp6</code> to confirm it is functional, using <code class=code2>perfdhcp
-</code> from the "client" machine. </li>
+<li>Add a <code class=code2>kea-dhcp4</code> configuration to "kea1" and "kea2".  Start <code class=code2>kea-dhcp4</code> on both servers.  Test <code class=code2>kea-dhcp4</code> to confirm it is functional, using <code class=code2>perfdhcp</code> from the "client" machine. </li>
+<li>Add a <code class=code2>kea-dhcp6</code> configuration to "kea1" and "kea2".  Start <code class=code2>kea-dhcp6</code> on both servers.  Test <code class=code2>kea-dhcp6</code> to confirm it is functional, using <code class=code2>perfdhcp</code> from the "client" machine. </li>
 <li>Install <code class=code2>stork-server</code> on "stork".  Start <code class=code2>stork-server</code>.  Log in to the <code class=code2>stork-server</code> and set a password.</li>
 <li>Install <code class=code2>stork-agent</code> on "kea1" and "kea2".  Register the <code class=code2>stork-agent</code> on each with <code class=code2>stork-server</code>.  Start <code class=code2>stork-agent</code>.
 Authorize the <code class=code2>stork-agent</code> from "kea1" and "kea2" on "stork".</li>
