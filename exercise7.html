@@ -6,7 +6,7 @@
 <p>Simulate more client traffic as in exercise 6.  Experiment with HA and its status reports in the Stork UI by stopping <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1". </p>
 
 <ol>
-<li><p>Connect to "client" a second time via ssh, as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Choose one session to call "dhcp4 client" and one to call "dhcp6 client".</p></li>
+<li><p>Connect to "client" a second time via ssh, as you will need to run <code class=code2>perfdhcp</code> twice simultaneously.  Choose one session to call "dhcp4 client" and one to call "dhcp6 client". Please refer to the instructions for connecting to the servers that contains your password if you need help connecting via ssh</p></li>
 <li>On "dhcp4 client", run a simulation of 100 DHCPv4 clients at a rate of 10 per second with the following command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button524>
@@ -46,7 +46,7 @@
 </ol>
 
 <ol start="5">
-<li><p>Verify that the <code class=code2>perfdhcp</code> instance running in your "dhcp4 client" window starts to report drops.</p></li>
+<li><p>Verify that the <code class=code2>perfdhcp</code> instance running in your "dhcp4 client" window starts to report drops. The <code class=code2>-t 15</code> argument supplied earlier causes <code class=code2>perfdhcp</code> to output a status report every 15 seconds.</p></li>
 <li>Check the status to see if the failover has occurred.  The <code class=code2>-Y 1 -y 3600</code> parameters passed to <code class=code2>perfdhcp</code> tell the tool to simulate an outage by reporting that an increasing number of seconds have elapsed while it has been trying to get an address as a real client would.  Kea watches for this when performing failover calculations.  To check the current status, execute this command on "kea2":
 <div class=coopCodeContainer>
   <div class=copyCode id=button549>
@@ -92,7 +92,7 @@
 
 <ol start="12">
 <li><p>Verify in the Stork UI that the states for <code class=code2>kea-dhcp6</code> on "kea1" and "kea2" are similar to those described in step 7.</p></li>
-<li><p>Notice in the "Events" log on the Stork UI that the times for the onset of trouble are shown.</p></li>
+<li><p>Notice in the "Events" log on the Stork UI that the times for the onset of trouble are shown. The "Events" log is available under "DHCP > Dashboard" as well as "Monitoring > Events" in the Stork UI.</p></li>
 <li><p>Verify that drops have stopped  incrementing in <code class=code2>perfdhcp</code> running on "dhcp6 client".</p></li>
 <li>Conclude the outage by restarting <code class=code2>kea-dhcp4</code> and <code class=code2>kea-dhcp6</code> on "kea1" with the following commands:
 <div class=coopCodeContainer>

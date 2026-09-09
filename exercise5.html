@@ -32,7 +32,7 @@
 </ol>
 
 <ol start="3">
-<li>Now register the agent from both "kea1" and "kea2" to the <code class=code2>stork-server</code> on "stork":
+<li>Now register the agent from both "kea1" and "kea2" to the <code class=code2>stork-server</code> on "stork".  This command should be run on both "kea1" and "kea2":
 <div class=coopCodeContainer>
   <div class=copyCode id=button450>
     <code id=450>sudo -u stork-agent stork-agent register --server-url http://192.168.1.4:4780</code>
@@ -41,6 +41,7 @@
     <a href="javascript:void(0)" onclick="copy2clipboard(450);"><b><font size=5px>&#x2398;</font></b> COPY</a>
   </div>
 </div>
+There will be several prompts for information.  Please just press "enter" to skip past each of these as the defaults are fine.
 </li>
 </ol>
 
@@ -61,7 +62,7 @@
 <li>Check the status of the <code class=code2>stork-agent</code> on both "kea1" and "kea2" to make sure it is running:
 <div class=coopCodeContainer>
   <div class=copyCode id=button466>
-    <code id=466>systemctl status isc-stork-agent</code>
+    <code id=466>systemctl status isc-stork-agent --no-pager</code>
   </div>
   <div class=copyFont id=copybutton466>
     <a href="javascript:void(0)" onclick="copy2clipboard(466);"><b><font size=5px>&#x2398;</font></b> COPY</a>
@@ -80,7 +81,7 @@ Note that you will be forced to change your password.  Please use the password t
 <li><p>Refresh the page to update the UI.</p></li>
 <li><p>Click the hamburger (three lines) menu and choose "DHCP". (If your screen is wide enough, you may see "DHCP" on the main menu bar.)</p></li>
 <li><p>Click "Dashboard".</p></li>
-<li><p>There should be a green checkmark ✅ in "Status" for "kea1" and "kea2".</p></li>
+<li><p>There should be a green checkmark ✅ in each "Status" for "kea1" and "kea2" for both DHCPv4 and DHCPv6 services.</p></li>
 </ol>
 
 <br>

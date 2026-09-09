@@ -5,8 +5,7 @@
 
 <p>Configure, start, and test <code class=code2>kea-dhcp4</code> on "kea1" and "kea2".</p>
 
-<ol>
-<li>Copy the <code class=code2>kea-dhcp4</code> configuration:
+<p>The below configuration will be used throughout this exercise.</p>
 <div class=coopCodeContainer>
   <div class=copyCode id=button64>
 <code id=64><pre>
@@ -99,11 +98,10 @@
     <a href="javascript:void(0)" onclick="copy2clipboard(64);"><b><font size=5px>&#x2398;</font></b> COPY</a>
   </div>
 </div>
-</li>
-</ol>
-
-<ol start="2">
-<li>Paste the configuration into <code class=code2>/etc/kea/kea-dhcp4.conf</code> on "kea1".  This is best accomplished by truncating the file (which will already have content) before opening it and adding the configuration.
+<ol>
+<li>Copy the <code class=code2>kea-dhcp4</code> configuration above and paste into <code class=code2>/etc/kea/kea-dhcp4.conf</code> on "kea1".
+The file was created during the install process. It has a large example configuration.
+Therefore, we first need to truncate the file before opening it and adding the configuration.  Use the following commands to truncate and open the file for editing.
 <div class=coopCodeContainer>
   <div class=copyCode id=button153>
     <code id=153>cp /dev/null /etc/kea/kea-dhcp4.conf &amp;&amp; nano /etc/kea/kea-dhcp4.conf</code>
@@ -116,7 +114,7 @@
 </li>
 </ol>
 
-<ol start="3">
+<ol start="2">
 <li>Test the configuration for syntax errors on "kea1":
 <div class=coopCodeContainer>
   <div class=copyCode id=button164>
@@ -126,11 +124,11 @@
     <a href="javascript:void(0)" onclick="copy2clipboard(164);"><b><font size=5px>&#x2398;</font></b> COPY</a>
   </div>
 </div>
-<p>Watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output.</p>
+<p>Watch for <code class=code2>syntax error</code> or <code class=code2>ERROR</code> in the output which would indicate a problem with the configuration.</p>
 </li>
 </ol>
 
-<ol start="4">
+<ol start="3">
 <li>Repeat step 2 on "kea2".  Before writing the file, locate <code class=code2>"this-server-name": "server1",</code> in the file.  This can be quickly found by pressing <code class=code2>ctrl+w</code> and typing
 or pasting some part of the text into the prompt.  Change the text to: <code class=code2>"this-server-name": "server2",</code> and write out the file as you did on "kea1".</li>
 <li>Repeat the configuration syntax test performed in step 3 on "kea2".</li>
@@ -146,7 +144,7 @@ or pasting some part of the text into the prompt.  Change the text to: <code cla
 <p>Check the status to make sure that the service is running:</p>
 <div class=coopCodeContainer>
   <div class=copyCode id=button182>
-    <code id=182>systemctl status isc-kea-dhcp4-server</code>
+    <code id=182>systemctl status isc-kea-dhcp4-server --no-pager</code>
   </div>
   <div class=copyFont id=copybutton182>
     <a href="javascript:void(0)" onclick="copy2clipboard(182);"><b><font size=5px>&#x2398;</font></b> COPY</a>
@@ -156,7 +154,7 @@ or pasting some part of the text into the prompt.  Change the text to: <code cla
 </li>
 </ol>
 
-<ol start="7">
+<ol start="6">
 <li>Use the API to test the current status of High Availability with the following command:
 <div class=coopCodeContainer>
   <div class=copyCode id=button192>
@@ -170,7 +168,7 @@ or pasting some part of the text into the prompt.  Change the text to: <code cla
 </li>
 </ol>
 
-<ol start="8">
+<ol start="7">
 <li>Perform a final test of <code class=code2>kea-dhcp4</code> simulating clients using <code class=code2>perfdhcp</code> from "client", using the command below:
 <div class=coopCodeContainer>
   <div class=copyCode id=button202>
