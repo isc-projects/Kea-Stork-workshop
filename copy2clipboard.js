@@ -1,10 +1,11 @@
 function copy2clipboard(id) {
   buttonid = 'copybutton'+id
+  console.log('id: '+id+'; buttonid: '+buttonid+';');
   // submitted id MUST be a form field
   // buttonid must be the id of the button to be disabled and replaced with "copied!"
   // Find the element that contains the text to be copied
   let formElem = document.getElementById(id);
-  console.log(formElem)
+  // console.log(formElem)
   // get the text and copy it to clipboard
   let text = formElem.innerText;
   navigator.clipboard.writeText(text);
@@ -17,9 +18,10 @@ function copy2clipboard(id) {
   document.getElementById(buttonid).innerHTML = '<b><font size=5px>&#x2398;</font></b> COPIED!'
   document.getElementById(buttonid).style.color = '#D3D3D3';
   // now wait a moment and then put back original values so user can continue to use the form
-  setTimeout(() => {
-    document.getElementById(buttonid).innerHTML = origHTML;
-    document.getElementById(buttonid).style.color = origCSS;
-  }, 5000);
+  setTimeout(putBack, 5000, buttonid, origHTML, origCSS);
 }
 
+function putBack(buttonid,origHTML,origCSS) {
+  document.getElementById(buttonid).innerHTML = origHTML;
+  document.getElementById(buttonid).style.color = origCSS;
+}
