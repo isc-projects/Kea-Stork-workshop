@@ -120,6 +120,7 @@ a.disabled {
   text-align: center;
   text-decoration: none;
   display: inline-block;
+  pointer-events: none;
 };
 
 a.ANOSTYLE {
