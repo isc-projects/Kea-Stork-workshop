@@ -70,9 +70,10 @@ div.coopCodeContainer {
   background-color: #f3f3f3;
   border-radius: 4px;
   border: 1px solid #ddd;
+  margin: 3px;
 }
 div.copyFont {
-  width: 10%;
+  width: 15%;
   text-align: right;
 }
 div.copyCode {
@@ -96,20 +97,6 @@ code.code2 {
   padding: 4px;
 }
 
-/* table element styling */
-table, th, td {
-  border: 1px solid;
-  border-collapse: collapse;
-}
-
-th {
-  background-color: #f3f3f3;
-}
-
-th, td {
-  padding: 10px;
-}
-
 a:link, a:visited {
   /* link styling */
   background-color: #dedede;
@@ -125,6 +112,16 @@ a:hover, a:active {
   background-color: #73AD21;
   color: white;
 }
+
+a.disabled {
+  background-color: #f3f3f3;
+  color: #D3D3D3;       
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  pointer-events: none;
+};
 
 a.ANOSTYLE {
   /* Links with no style for image links */
