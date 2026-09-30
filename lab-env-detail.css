@@ -66,10 +66,12 @@ div.bottom-div {
 /* code block styling */
 div.coopCodeContainer {
   width: 400px;
+  height: 53px;
   display: flex;
   background-color: #f3f3f3;
   border-radius: 4px;
   border: 1px solid #ddd;
+  margin: 3px;
 }
 div.copyFont {
   width: 100px;
@@ -95,29 +97,6 @@ code.code2 {
   border: 1px solid #ddd;
   padding: 4px;
 }
-code.ipbox {
-  padding: 0px 4px 0px 4px;
-}
-span.ipbox {
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  padding: 10px 0px 10px 0px;
-  background-color: #f3f3f3;
-}
-
-/* table element styling */
-table, th, td {
-  border: 1px solid;
-  border-collapse: collapse;
-}
-
-th {
-  background-color: #f3f3f3;
-}
-
-th, td {
-  padding: 10px;
-}
 
 a:link, a:visited {
   /* link styling */
@@ -134,6 +113,15 @@ a:hover, a:active {
   background-color: #73AD21;
   color: white;
 }
+
+a.disabled {
+  background-color: #f3f3f3;
+  color: #D3D3D3;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+};
 
 a.ANOSTYLE {
   /* Links with no style for image links */
